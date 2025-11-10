@@ -1,0 +1,28 @@
+# Node / Next.js build artifacts
+.next/
+node_modules/
+
+# Logs and temporary files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# IDE settings
+.idea/
+.vscode/
+
+# macOS
+.DS_Store
+
+# JMeter output
+jmeter/results/
+
+# Maven / Java build artifacts
+target/
+*/target/
+
+# Docker
+*.log
+
+

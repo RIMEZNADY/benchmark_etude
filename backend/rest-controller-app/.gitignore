@@ -1,0 +1,58 @@
+# Compiled class files
+/bin/
+/build/
+/out/
+!src/main/resources/static/**/out/
+
+# Log files
+*.log
+
+# Spring Boot specific files
+*.jar
+*.war
+*.ear
+
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# Gradle
+.gradle/
+build/
+
+# Eclipse
+*.classpath
+*.project
+*.settings/
+
+# IntelliJ
+*.iml
+.idea/
+*.iws
+*.ipr
+*.swp
+
+# VS Code
+.vscode/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.*
+
+# Local database files
+*.h2.db
+*.mv.db
+*.derby.db
+
+# Test reports
+test-output/
+surefire-reports/
+
+# Other
+*.bat
+*.sh
+

@@ -1,0 +1,23 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'backend-restcontroller-jmx'
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - backend-restcontroller:9404
+
+  - job_name: 'backend-jersey-jmx'
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - backend-jersey:9404
+
+  - job_name: 'backend-spring-data-rest-jmx'
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - backend-spring-data:9404
+

@@ -1,0 +1,7 @@
+target
+.mvn
+.idea
+.vscode
+*.iml
+apache-maven-3.9.9*
+

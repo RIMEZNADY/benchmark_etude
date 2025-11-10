@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="REST Benchmark - HEAVY-body">
+      <stringProp name="TestPlan.comments">Scenario 4 : payload 5 KB - 30→60 threads, ramp-up 60 s, palier 8 min.</stringProp>
+      <boolProp name="TestPlan.serialize_threadgroups">true</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="baseUrl" elementType="Argument">
+            <stringProp name="Argument.name">baseUrl</stringProp>
+            <stringProp name="Argument.value">http://localhost:8081</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="csvCategories" elementType="Argument">
+            <stringProp name="Argument.name">csvCategories</stringProp>
+            <stringProp name="Argument.value">     C:/Users/Rime Znady/Downloads/Bench-marking-test-main (2)/Bench-marking-test-main/jmeter/data/categories.csv </stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="csvItems" elementType="Argument">
+            <stringProp name="Argument.name">csvItems</stringProp>
+            <stringProp name="Argument.value">     C:/Users/Rime Znady/Downloads/Bench-marking-test-main (2)/Bench-marking-test-main/jmeter/data/items.csv</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="payloadSize" elementType="Argument">
+            <stringProp name="Argument.name">payloadSize</stringProp>
+            <stringProp name="Argument.value">5120</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="influxUrl" elementType="Argument">
+            <stringProp name="Argument.name">influxUrl</stringProp>
+            <stringProp name="Argument.value">http://localhost:8086</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="influxToken" elementType="Argument">
+            <stringProp name="Argument.name">influxToken</stringProp>
+            <stringProp name="Argument.value">xOgmUS8mLFwLYgZMeY9HHXWTzG-lB9ivuOb9f08aUFRPpXX5iQiTCP-PogwEOIcU6SjKhjhLMt8ydm7MFFBcAQ==</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="influxOrg" elementType="Argument">
+            <stringProp name="Argument.name">influxOrg</stringProp>
+            <stringProp name="Argument.value">perf</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="influxBucket" elementType="Argument">
+            <stringProp name="Argument.name">influxBucket</stringProp>
+            <stringProp name="Argument.value">jmeter</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </elementProp>
+    </TestPlan>
+    <hashTree>
+      <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV categories">
+        <stringProp name="delimiter">,</stringProp>
+        <stringProp name="fileEncoding">UTF-8</stringProp>
+        <stringProp name="filename">${csvCategories}</stringProp>
+        <boolProp name="ignoreFirstLine">true</boolProp>
+        <stringProp name="quoteChar">&quot;</stringProp>
+        <boolProp name="recycle">true</boolProp>
+        <stringProp name="shareMode">shareMode.all</stringProp>
+        <boolProp name="stopThread">false</boolProp>
+        <stringProp name="variableNames">categoryId</stringProp>
+        <boolProp name="quotedData">false</boolProp>
+      </CSVDataSet>
+      <hashTree/>
+      <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV items">
+        <stringProp name="delimiter">,</stringProp>
+        <stringProp name="fileEncoding">UTF-8</stringProp>
+        <stringProp name="filename">${csvItems}</stringProp>
+        <boolProp name="ignoreFirstLine">true</boolProp>
+        <stringProp name="quoteChar">&quot;</stringProp>
+        <boolProp name="recycle">true</boolProp>
+        <stringProp name="shareMode">shareMode.all</stringProp>
+        <boolProp name="stopThread">false</boolProp>
+        <stringProp name="variableNames">itemId</stringProp>
+        <boolProp name="quotedData">false</boolProp>
+      </CSVDataSet>
+      <hashTree/>
+      <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults">
+        <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+          <collectionProp name="Arguments.arguments"/>
+        </elementProp>
+        <stringProp name="HTTPSampler.implementation"></stringProp>
+      </ConfigTestElement>
+      <hashTree/>
+      <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Headers">
+        <collectionProp name="HeaderManager.headers">
+          <elementProp name="Content-Type" elementType="Header">
+            <stringProp name="Header.name">Content-Type</stringProp>
+            <stringProp name="Header.value">application/json</stringProp>
+          </elementProp>
+          <elementProp name="Accept" elementType="Header">
+            <stringProp name="Header.name">Accept</stringProp>
+            <stringProp name="Header.value">application/json</stringProp>
+          </elementProp>
+        </collectionProp>
+      </HeaderManager>
+      <hashTree/>
+      <BackendListener guiclass="BackendListenerGui" testclass="BackendListener" testname="InfluxDB v2 Backend Listener">
+        <elementProp name="arguments" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments">
+          <collectionProp name="Arguments.arguments">
+            <elementProp name="graphiteMetricsSender" elementType="Argument">
+              <stringProp name="Argument.name">graphiteMetricsSender</stringProp>
+              <stringProp name="Argument.value">org.apache.jmeter.visualizers.backend.graphite.TextGraphiteMetricsSender</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="graphiteHost" elementType="Argument">
+              <stringProp name="Argument.name">graphiteHost</stringProp>
+              <stringProp name="Argument.value"></stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="graphitePort" elementType="Argument">
+              <stringProp name="Argument.name">graphitePort</stringProp>
+              <stringProp name="Argument.value">2003</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="rootMetricsPrefix" elementType="Argument">
+              <stringProp name="Argument.name">rootMetricsPrefix</stringProp>
+              <stringProp name="Argument.value">jmeter.</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="summaryOnly" elementType="Argument">
+              <stringProp name="Argument.name">summaryOnly</stringProp>
+              <stringProp name="Argument.value">true</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="samplersList" elementType="Argument">
+              <stringProp name="Argument.name">samplersList</stringProp>
+              <stringProp name="Argument.value">.*</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="percentiles" elementType="Argument">
+              <stringProp name="Argument.name">percentiles</stringProp>
+              <stringProp name="Argument.value">90;95;99</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="nodeName" elementType="Argument">
+              <stringProp name="Argument.name">nodeName</stringProp>
+              <stringProp name="Argument.value">rest-benchmark</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="influxDBBucket" elementType="Argument">
+              <stringProp name="Argument.name">influxDBBucket</stringProp>
+              <stringProp name="Argument.value">${influxBucket}</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="saveResponseBodyOfFailures" elementType="Argument">
+              <stringProp name="Argument.name">saveResponseBodyOfFailures</stringProp>
+              <stringProp name="Argument.value">false</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="recordSubSamples" elementType="Argument">
+              <stringProp name="Argument.name">recordSubSamples</stringProp>
+              <stringProp name="Argument.value">false</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="influxDBToken" elementType="Argument">
+              <stringProp name="Argument.name">influxDBToken</stringProp>
+              <stringProp name="Argument.value">${influxToken}</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="influxDBURL" elementType="Argument">
+              <stringProp name="Argument.name">influxDBURL</stringProp>
+              <stringProp name="Argument.value">${influxUrl}</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="influxDBOrganization" elementType="Argument">
+              <stringProp name="Argument.name">influxDBOrganization</stringProp>
+              <stringProp name="Argument.value">${influxOrg}</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="useRegexForSamplerList" elementType="Argument">
+              <stringProp name="Argument.name">useRegexForSamplerList</stringProp>
+              <stringProp name="Argument.value">false</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="runId" elementType="Argument">
+              <stringProp name="Argument.name">runId</stringProp>
+              <stringProp name="Argument.value">${__time(yyyyMMddHHmmss)}</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="responseBodyLength" elementType="Argument">
+              <stringProp name="Argument.name">responseBodyLength</stringProp>
+              <stringProp name="Argument.value">2048</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="testName" elementType="Argument">
+              <stringProp name="Argument.name">testName</stringProp>
+              <stringProp name="Argument.value">heavy-body</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+          </collectionProp>
+        </elementProp>
+        <stringProp name="classname">org.apache.jmeter.visualizers.backend.graphite.GraphiteBackendListenerClient</stringProp>
+      </BackendListener>
+      <hashTree/>
+      <TestFragmentController guiclass="TestFragmentControllerGui" testclass="TestFragmentController" testname="HEAVY Samplers"/>
+      <hashTree>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Request Mix"/>
+        <hashTree>
+          <ThroughputController guiclass="ThroughputControllerGui" testclass="ThroughputController" testname="50% POST /api/items (5KB)" enabled="true">
+            <intProp name="ThroughputController.style">0</intProp>
+            <boolProp name="ThroughputController.perThread">false</boolProp>
+            <intProp name="ThroughputController.maxThroughput">0</intProp>
+            <intProp name="ThroughputController.percentThroughput">50</intProp>
+            <boolProp name="ThroughputController.byPercent">true</boolProp>
+          </ThroughputController>
+          <hashTree>
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST /api/items (5KB)">
+              <stringProp name="HTTPSampler.path">${baseUrl}/api/items</stringProp>
+              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+              <stringProp name="HTTPSampler.method">POST</stringProp>
+              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+              <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+              <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+                <collectionProp name="Arguments.arguments">
+                  <elementProp name="" elementType="HTTPArgument">
+                    <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                    <stringProp name="Argument.value">${itemBodyLarge}</stringProp>
+                    <stringProp name="Argument.metadata">=</stringProp>
+                  </elementProp>
+                </collectionProp>
+              </elementProp>
+            </HTTPSamplerProxy>
+            <hashTree>
+              <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Prepare Item Payload (5KB)">
+                <stringProp name="scriptLanguage">groovy</stringProp>
+                <stringProp name="script">import org.apache.commons.lang3.RandomStringUtils
+import java.util.Locale
+
+def uuid = java.util.UUID.randomUUID().toString()
+def price = String.format(Locale.US, &quot;%.2f&quot;, (Math.random() * 400) + 10)
+def stock = (int)(Math.random() * 400)
+
+def base = &quot;&quot;&quot;{&quot;sku&quot;:&quot;${uuid}&quot;,&quot;name&quot;:&quot;Perf-${uuid.substring(0,8)}&quot;,&quot;price&quot;:${price},&quot;stock&quot;:${stock},&quot;categoryId&quot;:${categoryId},&quot;details&quot;:&quot;&quot;}&quot;&quot;&quot;
+int targetBytes = Integer.parseInt(vars.get(&quot;payloadSize&quot;))
+int currentBytes = base.getBytes(&quot;UTF-8&quot;).length
+int fillerBytes = Math.max(0, targetBytes - currentBytes)
+def filler = (fillerBytes &gt; 0) ? RandomStringUtils.randomAlphanumeric(fillerBytes) : &quot;&quot;
+def payload = base.replace(&quot;\&quot;\&quot;&quot;, &quot;\&quot;${filler}\&quot;&quot;)
+
+vars.put(&quot;itemBodyLarge&quot;, payload)
+</stringProp>
+                <stringProp name="parameters"></stringProp>
+                <stringProp name="filename"></stringProp>
+                <stringProp name="cacheKey">false</stringProp>
+              </JSR223PreProcessor>
+              <hashTree/>
+            </hashTree>
+          </hashTree>
+          <ThroughputController guiclass="ThroughputControllerGui" testclass="ThroughputController" testname="50% PUT /api/items/{id} (5KB)" enabled="true">
+            <intProp name="ThroughputController.style">0</intProp>
+            <boolProp name="ThroughputController.perThread">false</boolProp>
+            <intProp name="ThroughputController.maxThroughput">0</intProp>
+            <intProp name="ThroughputController.percentThroughput">50</intProp>
+            <boolProp name="ThroughputController.byPercent">true</boolProp>
+          </ThroughputController>
+          <hashTree>
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="PUT /api/items/{id} (5KB)">
+              <stringProp name="HTTPSampler.path">${baseUrl}/api/items/${itemId}</stringProp>
+              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+              <stringProp name="HTTPSampler.method">PUT</stringProp>
+              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+              <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+              <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+                <collectionProp name="Arguments.arguments">
+                  <elementProp name="" elementType="HTTPArgument">
+                    <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                    <stringProp name="Argument.value">${itemBodyLarge}</stringProp>
+                    <stringProp name="Argument.metadata">=</stringProp>
+                  </elementProp>
+                </collectionProp>
+              </elementProp>
+            </HTTPSamplerProxy>
+            <hashTree>
+              <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Prepare Item Update Payload (5KB)">
+                <stringProp name="scriptLanguage">groovy</stringProp>
+                <stringProp name="script">import org.apache.commons.lang3.RandomStringUtils
+import java.util.Locale
+
+def uuid = java.util.UUID.randomUUID().toString()
+def price = String.format(Locale.US, &quot;%.2f&quot;, (Math.random() * 400) + 10)
+def stock = (int)(Math.random() * 400)
+
+def base = &quot;&quot;&quot;{&quot;sku&quot;:&quot;UPD-${uuid.substring(0,12)}&quot;,&quot;name&quot;:&quot;Updated-${uuid.substring(0,6)}&quot;,&quot;price&quot;:${price},&quot;stock&quot;:${stock},&quot;categoryId&quot;:${categoryId},&quot;details&quot;:&quot;&quot;}&quot;&quot;&quot;
+int targetBytes = Integer.parseInt(vars.get(&quot;payloadSize&quot;))
+int currentBytes = base.getBytes(&quot;UTF-8&quot;).length
+int fillerBytes = Math.max(0, targetBytes - currentBytes)
+def filler = (fillerBytes &gt; 0) ? RandomStringUtils.randomAlphanumeric(fillerBytes) : &quot;&quot;
+def payload = base.replace(&quot;\&quot;\&quot;&quot;, &quot;\&quot;${filler}\&quot;&quot;)
+
+vars.put(&quot;itemBodyLarge&quot;, payload)
+</stringProp>
+                <stringProp name="parameters"></stringProp>
+                <stringProp name="filename"></stringProp>
+                <stringProp name="cacheKey">false</stringProp>
+              </JSR223PreProcessor>
+              <hashTree/>
+            </hashTree>
+          </hashTree>
+        </hashTree>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Stage 1 - 30 utilisateurs" enabled="true">
+        <intProp name="ThreadGroup.num_threads">30</intProp>
+        <intProp name="ThreadGroup.ramp_time">60</intProp>
+        <longProp name="ThreadGroup.duration">480</longProp>
+        <longProp name="ThreadGroup.delay">0</longProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController">
+          <intProp name="LoopController.loops">-1</intProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+        <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="USE HEAVY Samplers">
+          <collectionProp name="ModuleController.node_path">
+            <stringProp name="764597751">Test Plan</stringProp>
+            <stringProp name="-1362714358">REST Benchmark - HEAVY-body</stringProp>
+            <stringProp name="-1202595612">HEAVY Samplers</stringProp>
+            <stringProp name="-1478593269">Request Mix</stringProp>
+          </collectionProp>
+        </ModuleController>
+        <hashTree/>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Stage 2 - 60 utilisateurs" enabled="true">
+        <intProp name="ThreadGroup.num_threads">60</intProp>
+        <intProp name="ThreadGroup.ramp_time">60</intProp>
+        <longProp name="ThreadGroup.duration">480</longProp>
+        <longProp name="ThreadGroup.delay">0</longProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController">
+          <intProp name="LoopController.loops">-1</intProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+        <ModuleController guiclass="ModuleControllerGui" testclass="ModuleController" testname="USE HEAVY Samplers (Stage 2)" enabled="true">
+          <collectionProp name="ModuleController.node_path">
+            <stringProp name="764597751">Test Plan</stringProp>
+            <stringProp name="-1362714358">REST Benchmark - HEAVY-body</stringProp>
+            <stringProp name="-1202595612">HEAVY Samplers</stringProp>
+            <stringProp name="-1478593269">Request Mix</stringProp>
+          </collectionProp>
+        </ModuleController>
+        <hashTree/>
+      </hashTree>
+      <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults">
+        <stringProp name="HTTPSampler.domain">${baseUrl}</stringProp>
+        <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+          <collectionProp name="Arguments.arguments"/>
+        </elementProp>
+        <stringProp name="HTTPSampler.implementation"></stringProp>
+      </ConfigTestElement>
+      <hashTree/>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

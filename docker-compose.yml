@@ -1,0 +1,165 @@
+services:
+  backend-restcontroller:
+    build:
+      context: ./backend/rest-controller-app
+      dockerfile: Dockerfile
+    image: rest-benchmark/backend-restcontroller:latest
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/benchmark
+      SPRING_DATASOURCE_USERNAME: benchmark
+      SPRING_DATASOURCE_PASSWORD: benchmark
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SERVER_PORT: 8081
+    ports:
+      - "8081:8081"
+    depends_on:
+      - db
+    networks:
+      - benchmark-net
+  backend-jersey:
+    build:
+      context: ./backend/jersey-app
+      dockerfile: Dockerfile
+    image: rest-benchmark/backend-jersey:latest
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/benchmark
+      SPRING_DATASOURCE_USERNAME: benchmark
+      SPRING_DATASOURCE_PASSWORD: benchmark
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SERVER_PORT: 8082
+    ports:
+      - "8082:8082"
+    depends_on:
+      - db
+    networks:
+      - benchmark-net
+  backend-spring-data:
+    build:
+      context: ./backend/spring-data-rest-app
+      dockerfile: Dockerfile
+    image: rest-benchmark/backend-spring-data:latest
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/benchmark
+      SPRING_DATASOURCE_USERNAME: benchmark
+      SPRING_DATASOURCE_PASSWORD: benchmark
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SERVER_PORT: 8083
+    ports:
+      - "8083:8083"
+    depends_on:
+      - db
+    networks:
+      - benchmark-net
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: rest-benchmark/frontend:latest
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:8081
+      NEXT_PUBLIC_JERSEY_API_BASE_URL: http://localhost:8082
+      NEXT_PUBLIC_SPRING_DATA_REST_API_BASE_URL: http://localhost:8083
+      API_BASE_URL_INTERNAL: http://backend-restcontroller:8081
+      JERSEY_API_BASE_URL_INTERNAL: http://backend-jersey:8082
+      SPRING_DATA_REST_API_BASE_URL_INTERNAL: http://backend-spring-data:8083
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend-restcontroller
+      - backend-jersey
+      - backend-spring-data
+    networks:
+      - benchmark-net
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: benchmark
+      POSTGRES_USER: benchmark
+      POSTGRES_PASSWORD: benchmark
+    ports:
+      - "55432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - benchmark-net
+
+  influxdb:
+    image: influxdb:2.7
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: admin
+      DOCKER_INFLUXDB_INIT_PASSWORD: admin123
+      DOCKER_INFLUXDB_INIT_ORG: perf
+      DOCKER_INFLUXDB_INIT_BUCKET: jmeter
+      DOCKER_INFLUXDB_INIT_RETENTION: 0
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: jmeter-dev-token
+    ports:
+      - "8086:8086"
+    volumes:
+      - influxdb-data:/var/lib/influxdb2
+      - influxdb-config:/etc/influxdb2
+    networks:
+      - benchmark-net
+
+  grafana:
+    image: grafana/grafana:10.4.1
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin123
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+    depends_on:
+      - influxdb
+    networks:
+      - benchmark-net
+
+  prometheus:
+    image: prom/prometheus:v2.52.0
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    depends_on:
+      - backend-restcontroller
+      - backend-jersey
+      - backend-spring-data
+    networks:
+      - benchmark-net
+
+  jmeter:
+    build:
+      context: ./jmeter
+    image: rest-benchmark/jmeter:latest
+    depends_on:
+      - influxdb
+    environment:
+      SCENARIO: read-heavy
+      VARIANT: restcontroller
+      BASE_URL: http://backend-restcontroller:8081
+      INFLUX_URL: http://influxdb:8086
+      INFLUX_TOKEN: jmeter-dev-token
+      INFLUX_ORG: perf
+      INFLUX_BUCKET: jmeter
+      CSV_CATEGORIES: /test/data/categories.csv
+      CSV_ITEMS: /test/data/items.csv
+    volumes:
+      - ./jmeter:/test
+    networks:
+      - benchmark-net
+    entrypoint: ["/bin/sh", "-c", "chmod +x /test/run.sh && /test/run.sh"]
+
+volumes:
+  db-data:
+  influxdb-data:
+  influxdb-config:
+  grafana-data:
+
+networks:
+  benchmark-net:
+    driver: bridge
+
